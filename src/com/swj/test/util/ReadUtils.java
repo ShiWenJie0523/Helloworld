@@ -141,7 +141,7 @@ public class ReadUtils {
 	 * 
 	 * @return
 	 */
-	public static String[] readExcelFile() {
+	public static void readExcelFile(String path) {
 		String[] val = null;
 		try {
 			// 创建对Excel工作簿文件
@@ -150,13 +150,14 @@ public class ReadUtils {
 			// 在Excel文档中，第一张工作表的缺省索引是0，
 			// 其语句为：HSSFSheet sheet = workbook.getSheetAt(0);
 			// HSSFSheet sheet = wookbook.getSheet("Sheet1");
+			DecimalFormat df1 = new DecimalFormat("0.0#");
 			DecimalFormat df = new DecimalFormat("0");
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Workbook book = null;
 			try {
-				book = new XSSFWorkbook(filePath);
+				book = new XSSFWorkbook(path);
 			} catch (Exception ex) {
-				book = new HSSFWorkbook(new FileInputStream(filePath));
+				book = new HSSFWorkbook(new FileInputStream(path));
 			}
 
 			Sheet sheet = book.getSheet("Sheet1");
@@ -182,7 +183,9 @@ public class ReadUtils {
 							case Cell.CELL_TYPE_NUMERIC:
 								if (j == cells - 1) {
 									value += sdf.format(HSSFDateUtil.getJavaDate(cell.getNumericCellValue()));
-								} else {
+								}else if(j == 1){
+									value += df1.format(cell.getNumericCellValue()) + ",";
+								}else{
 									value += df.format(cell.getNumericCellValue()) + ",";
 								}
 								break;
@@ -192,26 +195,25 @@ public class ReadUtils {
 							default:
 								break;
 							}
+						}else{
+							value += "" + ",";
 						}
 					}
-
 					val = value.split(",");
-					for (int j = 0; j < val.length; j++) {
+					SmsCountDAO.saveSmsCount(val);
+					value = "";
+					/*for (int j = 0; j < val.length; j++) {
 						// 每一行列数中的值遍历出来
 						System.out.println(val[j]);
-					}
+					}*/
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return val;
 	}
 	
 	public static void main(String[] args) {
-		String[] values = readCsvfile(csvFilePath);
-		for (String string : values) {
-			System.out.println(string);
-		}
+		readExcelFile("C:\\Users\\wenjie.shi\\Desktop\\T_STA_SMS_COUNT.xlsx");
 	}
 }

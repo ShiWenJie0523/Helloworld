@@ -14,7 +14,10 @@ import java.io.OutputStreamWriter;
 import java.util.Arrays;
 import java.util.List;
 
-import com.swj.test.util.MoDAO;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
+import com.swj.test.util.ExcelUtil;
+import com.swj.test.util.SmsSumDAO;
 
 /**
   *
@@ -33,23 +36,63 @@ import com.swj.test.util.MoDAO;
 public class Main {
 
 	public static void main(String[] args) {
-		/*System.out.println("hi,Helloworld");
-		MyThread thread = new MyThread();
-		thread.start();*/
-		Object[] head = {"mobile","destaddr","content","linkid","serviceid","time"};
+		/*Object[] head = {"运营商","收入","包月用户数","点播用户数","日期"};
 		List<Object> headList = Arrays.asList(head);
 		long time = System.currentTimeMillis();
-		List<List<Object>> list = MoDAO.queryList();
+		List<List<Object>> list = SmsSumDAO.queryCountList();
 		long time1 = System.currentTimeMillis();
 		System.out.println(time1 - time + "ms");
 		System.out.println("取到数据的记录数：" + list.size());
 		//生成数据csv文件
 		String outPutPath = "D:" + File.separator + "test" + File.separator;
-		String filename = "上行数据";
-		createCSVFile(headList, list, outPutPath, filename);
-		System.out.println("===========写入文件完成============");
+		String filename = "运营收入报表.xls";
+		HSSFWorkbook web = ExcelUtil.export(list, headList);
+		FileOutputStream stream = null;
+		try {
+			stream = new FileOutputStream(new File(outPutPath + filename));
+			web.write(stream);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				stream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}*/
+		//createCSVFile(headList, list, outPutPath, filename);
+		writeFile();
 	}
 	
+	
+	public static void writeFile(){
+		Object[] head = {"省份名称","运营商","业务名称","资费标准","收入","短信下发成功数","用户数","日期"};
+		List<Object> headList = Arrays.asList(head);
+		long time = System.currentTimeMillis();
+		List<List<Object>> list = SmsSumDAO.queryList();
+		long time1 = System.currentTimeMillis();
+		System.out.println(time1 - time + "ms");
+		System.out.println("取到数据的记录数：" + list.size());
+		//生成数据文件
+		String outPutPath = "D:" + File.separator + "test" + File.separator;
+		String filename = "运营分析报表.xls";
+		HSSFWorkbook web = ExcelUtil.export(list, headList);
+		FileOutputStream stream = null;
+		try {
+			stream = new FileOutputStream(new File(outPutPath + filename));
+			web.write(stream);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				stream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		//createCSVFile(headList, list, outPutPath, filename);
+		System.out.println("===========写入文件完成============");
+	}
 	
 	/**
 	 * CSV文件生成方法
