@@ -17,5 +17,7 @@
 	<classpathentry kind="lib" path="lib/stax-api-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/xmlbeans-2.3.0.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang3-3.2.jar"/>
+	<classpathentry kind="lib" path="lib/chilkat.jar"/>
+	<classpathentry kind="lib" path="lib/commons-net-3.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
